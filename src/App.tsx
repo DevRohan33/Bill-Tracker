@@ -9,6 +9,8 @@ import Layout from "./components/layout/Layout";
 import Dashboard from "./pages/Dashboard";
 import UploadBill from "./pages/UploadBill";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import Index from "./pages/Index";
 
 const queryClient = new QueryClient();
 
@@ -19,13 +21,15 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
-          <Layout>
-            <Routes>
-              <Route path="/" element={<Dashboard />} />
+          <Routes>
+            <Route path="/login" element={<Login />} />
+            <Route path="/" element={<Index />} />
+            <Route element={<Layout />}>
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/upload" element={<UploadBill />} />
               <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Layout>
+            </Route>
+          </Routes>
         </BrowserRouter>
       </BillProvider>
     </TooltipProvider>
