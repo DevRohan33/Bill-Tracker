@@ -8,7 +8,7 @@ import {
   DialogTitle,
   DialogFooter
 } from '@/components/ui/dialog';
-import { Calendar, FileImage } from 'lucide-react';
+import { Calendar, FileText, FileImage } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface TransactionDetailProps {
@@ -32,8 +32,8 @@ const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
         
         <div className="space-y-4 py-4">
           <div className="flex flex-col space-y-1">
-            <span className="text-sm font-medium text-muted-foreground">Description</span>
-            <span className="font-medium">{bill.note || 'Untitled'}</span>
+            <span className="text-sm font-medium text-muted-foreground">Title</span>
+            <span className="text-lg font-medium">{bill.title || 'Untitled'}</span>
           </div>
           
           <div className="flex flex-col space-y-1">
@@ -55,6 +55,16 @@ const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
               <span>{bill.date.toLocaleDateString()}</span>
             </div>
           </div>
+          
+          {bill.note && (
+            <div className="flex flex-col space-y-1">
+              <span className="text-sm font-medium text-muted-foreground">Description</span>
+              <div className="flex items-start">
+                <FileText className="mr-2 mt-0.5 size-4 text-muted-foreground" />
+                <span>{bill.note}</span>
+              </div>
+            </div>
+          )}
           
           {bill.file && (
             <div className="mt-4">

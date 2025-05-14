@@ -5,6 +5,7 @@ export type BillType = 'income' | 'expense';
 
 export interface Bill {
   id: string;
+  title: string;
   amount: number;
   type: BillType;
   note: string;

@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { format } from "date-fns";
-import { CalendarIcon, Upload, FileText } from "lucide-react";
+import { CalendarIcon, Upload, FileText, FileInput } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -26,6 +26,7 @@ import {
 } from "@/components/ui/form";
 
 interface FormValues {
+  title: string;
   amount: number;
   type: BillType;
   note: string;
@@ -41,6 +42,7 @@ const UploadBill = () => {
 
   const { register, handleSubmit, watch, setValue, reset, formState: { errors } } = useForm<FormValues>({
     defaultValues: {
+      title: '',
       amount: 0,
       type: 'expense',
       note: '',
@@ -70,7 +72,17 @@ const UploadBill = () => {
       return;
     }
 
+    if (!data.title.trim()) {
+      toast({
+        title: "Missing Title",
+        description: "Please enter a transaction title",
+        variant: "destructive"
+      });
+      return;
+    }
+
     addBill({
+      title: data.title.trim(),
       amount: amountNumber,
       type: data.type,
       note: data.note,
@@ -146,10 +158,24 @@ const UploadBill = () => {
                   </div>
                 )}
 
+                {/* Title */}
+                <div className="space-y-2">
+                  <Label htmlFor="title" className="text-base">Transaction Title *</Label>
+                  <Input
+                    id="title"
+                    type="text"
+                    placeholder="Enter transaction title"
+                    {...register("title", { required: true })}
+                  />
+                  {errors.title && (
+                    <p className="text-sm text-destructive">Transaction title is required</p>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {/* Amount */}
                   <div className="space-y-2">
-                    <Label htmlFor="amount" className="text-base">Amount ($)</Label>
+                    <Label htmlFor="amount" className="text-base">Amount ($) *</Label>
                     <div className="relative">
                       <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500">$</span>
                       <Input
@@ -169,7 +195,7 @@ const UploadBill = () => {
 
                   {/* Date */}
                   <div className="space-y-2">
-                    <Label className="text-base">Date</Label>
+                    <Label className="text-base">Date *</Label>
                     <Popover>
                       <PopoverTrigger asChild>
                         <Button
@@ -198,7 +224,7 @@ const UploadBill = () => {
 
                 {/* Type */}
                 <div className="space-y-3">
-                  <Label className="text-base">Transaction Type</Label>
+                  <Label className="text-base">Transaction Type *</Label>
                   <RadioGroup
                     value={selectedType}
                     onValueChange={(value) => setValue('type', value as BillType)}
@@ -215,9 +241,9 @@ const UploadBill = () => {
                   </RadioGroup>
                 </div>
 
-                {/* Note */}
+                {/* Description (formerly Note) */}
                 <div className="space-y-2">
-                  <Label htmlFor="note" className="text-base">Note (Optional)</Label>
+                  <Label htmlFor="note" className="text-base">Description (Optional)</Label>
                   <Textarea
                     id="note"
                     placeholder="Add details about this transaction"
@@ -243,6 +269,11 @@ const UploadBill = () => {
             </CardHeader>
             <CardContent className="p-6">
               <div className="space-y-4">
+                <div className="border-l-4 border-primary pl-4 py-2">
+                  <h3 className="font-medium mb-1">Transaction Title</h3>
+                  <p className="text-sm text-muted-foreground">Enter a clear name to easily identify your transaction later.</p>
+                </div>
+                
                 <div className="border-l-4 border-primary pl-4 py-2">
                   <h3 className="font-medium mb-1">Manual Entry</h3>
                   <p className="text-sm text-muted-foreground">Enter transaction details manually for quick recording.</p>

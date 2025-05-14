@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useBill } from '@/contexts/BillContext';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import SummaryCard from '@/components/dashboard/SummaryCard';
-import { TrendingUp, TrendingDown, DollarSign, Calendar, Download, FileText } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Download, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import TransactionDetail from '@/components/dashboard/TransactionDetail';
@@ -47,13 +47,25 @@ const Dashboard = () => {
   const filteredProfit = filteredIncome - filteredExpenses;
   
   const handleDownload = () => {
-    // Create CSV content
-    const headers = 'Date,Type,Amount,Note\n';
-    const csvContent = filteredBills.map(bill => 
-      `${bill.date.toLocaleDateString()},${bill.type},${bill.amount.toFixed(2)},"${bill.note || ''}"`
+    // Create financial overview section
+    const overviewSection = [
+      'Financial Overview',
+      `Time Period: ${timeFilter === 'all' ? 'All Time' : timeFilter === 'yearly' ? 'This Year' : 'This Month'}`,
+      `Total Income: $${filteredIncome.toFixed(2)}`,
+      `Total Expenses: $${filteredExpenses.toFixed(2)}`,
+      `Profit/Loss: $${filteredProfit.toFixed(2)}`,
+      '',
+      '---------------------------------------------',
+      ''
+    ].join('\n');
+    
+    // Create detailed transaction data
+    const headers = 'Title,Date,Type,Amount,Description\n';
+    const transactionData = filteredBills.map(bill => 
+      `"${bill.title || 'Untitled'}",${bill.date.toLocaleDateString()},"${bill.type}",${bill.amount.toFixed(2)},"${bill.note || ''}"`
     ).join('\n');
     
-    const blob = new Blob([headers + csvContent], { type: 'text/csv' });
+    const blob = new Blob([overviewSection + headers + transactionData], { type: 'text/csv' });
     const url = URL.createObjectURL(blob);
     
     // Create a link and trigger the download
@@ -137,7 +149,7 @@ const Dashboard = () => {
                   onClick={() => setSelectedBill(bill.id)}
                 >
                   <div>
-                    <span className="font-medium">{bill.note || 'Untitled'}</span>
+                    <span className="font-medium">{bill.title || 'Untitled'}</span>
                     <p className="text-sm text-muted-foreground">
                       {bill.date.toLocaleDateString()}
                     </p>
