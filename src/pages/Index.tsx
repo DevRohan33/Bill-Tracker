@@ -1,9 +1,9 @@
 
-import Dashboard from './Dashboard';
+import { Navigate } from 'react-router-dom';
 
 const Index = () => {
   return (
-    <Dashboard />
+    <Navigate to="/dashboard" replace />
   );
 };
 
