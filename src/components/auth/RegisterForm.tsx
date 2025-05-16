@@ -6,13 +6,13 @@ import { Label } from '@/components/ui/label';
 import { Mail, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 
-const LoginForm = () => {
+const RegisterForm = () => {
   const navigate = useNavigate();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleRegister = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!email || !password) {
@@ -26,12 +26,12 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      // TODO: Replace with your Supabase login
-      toast({ title: "Success", description: "Login successful!" });
+      // TODO: Replace with Supabase signup logic
+      toast({ title: "Success", description: "Account created successfully!" });
       navigate('/dashboard');
     } catch (error: any) {
       toast({
-        title: "Login failed",
+        title: "Registration failed",
         description: error.message || "Something went wrong",
         variant: "destructive",
       });
@@ -43,11 +43,11 @@ const LoginForm = () => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">Login to Your Bill Tracker</h1>
-        <p className="text-muted-foreground">Enter your credentials to access your account</p>
+        <h1 className="text-2xl font-bold">Create an Account</h1>
+        <p className="text-muted-foreground">Start tracking your bills with ease</p>
       </div>
 
-      <form onSubmit={handleLogin} className="space-y-4">
+      <form onSubmit={handleRegister} className="space-y-4">
         <div className="space-y-2">
           <Label htmlFor="email">Email</Label>
           <div className="relative">
@@ -66,10 +66,7 @@ const LoginForm = () => {
         </div>
 
         <div className="space-y-2">
-          <div className="flex justify-between">
-            <Label htmlFor="password">Password</Label>
-            <a href="#" className="text-sm text-primary hover:underline">Forgot password?</a>
-          </div>
+          <Label htmlFor="password">Password</Label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 flex items-center pl-3 text-muted-foreground">
               <Lock size={18} />
@@ -86,29 +83,30 @@ const LoginForm = () => {
         </div>
 
         <Button type="submit" className="w-full" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
+          {loading ? 'Creating account...' : 'Register'}
         </Button>
 
         <div className="flex flex-col gap-2 pt-2">
-          <Button variant="outline" className="w-full">Continue with Google</Button>
-          <Button variant="outline" className="w-full">Continue with Phone</Button>
+          <Button variant="outline" className="w-full">Sign up with Google</Button>
+          <Button variant="outline" className="w-full">Sign up with Phone</Button>
         </div>
 
-        <div className="text-center pt-4">
+                <div className="text-center pt-4">
           <p className="text-sm text-muted-foreground">
-            New user?{' '}
+            Already have an account ?{' '}
             <button
               type="button"
               className="text-primary hover:underline font-medium"
-              onClick={() => navigate('/register')}
+              onClick={() => navigate('/login')}
             >
-              Register
+              Login
             </button>
           </p>
         </div>
+
       </form>
     </div>
   );
 };
 
-export default LoginForm;
+export default RegisterForm;

@@ -1,5 +1,13 @@
-
-import React, { createContext, useState, useContext, ReactNode } from 'react';
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from 'react';
+import { db } from '@/lib/firebase';
+import { collection, onSnapshot, query, orderBy } from 'firebase/firestore';
+import { getAuth } from 'firebase/auth';
 
 export type BillType = 'income' | 'expense';
 
@@ -10,12 +18,11 @@ export interface Bill {
   type: BillType;
   note: string;
   date: Date;
-  file?: File | null;
+  fileURL?: string | null;
 }
 
 interface BillContextType {
   bills: Bill[];
-  addBill: (bill: Omit<Bill, 'id'>) => void;
   totalIncome: number;
   totalExpenses: number;
   profit: number;
@@ -23,16 +30,37 @@ interface BillContextType {
 
 const BillContext = createContext<BillContextType | undefined>(undefined);
 
-export const BillProvider = ({ children }: { children: ReactNode }) => {
+function BillProvider({ children }: { children: ReactNode }) {
   const [bills, setBills] = useState<Bill[]>([]);
+  const auth = getAuth();
+  const user = auth.currentUser;
 
-  const addBill = (bill: Omit<Bill, 'id'>) => {
-    const newBill = {
-      ...bill,
-      id: crypto.randomUUID(),
-    };
-    setBills((prevBills) => [...prevBills, newBill]);
-  };
+  useEffect(() => {
+    if (!user) return;
+
+    const q = query(
+      collection(db, 'users', user.uid, 'bills'),
+      orderBy('date', 'desc')
+    );
+
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      const fetchedBills: Bill[] = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        return {
+          id: doc.id,
+          title: data.title,
+          amount: data.amount,
+          type: data.type,
+          note: data.note,
+          date: data.date?.toDate?.() || new Date(),
+          fileURL: data.fileURL || null,
+        };
+      });
+      setBills(fetchedBills);
+    });
+
+    return () => unsubscribe();
+  }, [user]);
 
   const totalIncome = bills
     .filter((bill) => bill.type === 'income')
@@ -48,7 +76,6 @@ export const BillProvider = ({ children }: { children: ReactNode }) => {
     <BillContext.Provider
       value={{
         bills,
-        addBill,
         totalIncome,
         totalExpenses,
         profit,
@@ -57,12 +84,14 @@ export const BillProvider = ({ children }: { children: ReactNode }) => {
       {children}
     </BillContext.Provider>
   );
-};
+}
 
-export const useBill = (): BillContextType => {
+function useBill(): BillContextType {
   const context = useContext(BillContext);
   if (context === undefined) {
     throw new Error('useBill must be used within a BillProvider');
   }
   return context;
-};
+}
+
+export { BillProvider, useBill };

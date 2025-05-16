@@ -135,33 +135,34 @@ const Dashboard = () => {
             {filteredBills.length} {filteredBills.length === 1 ? 'transaction' : 'transactions'}
           </span>
         </CardHeader>
-        <CardContent>
-          {filteredBills.length === 0 ? (
-            <p className="text-center py-8 text-muted-foreground">
-              No transactions yet. Add your first bill by clicking "Add Bill".
-            </p>
-          ) : (
-            <div className="space-y-1">
-              {filteredBills.slice().reverse().slice(0, 5).map((bill) => (
-                <div 
-                  key={bill.id} 
-                  className="flex justify-between py-2 border-b last:border-0 hover:bg-gray-50 cursor-pointer p-2 rounded-md transition-colors"
-                  onClick={() => setSelectedBill(bill.id)}
-                >
-                  <div>
-                    <span className="font-medium">{bill.title || 'Untitled'}</span>
-                    <p className="text-sm text-muted-foreground">
-                      {bill.date.toLocaleDateString()}
-                    </p>
-                  </div>
-                  <div className={`font-semibold ${bill.type === 'income' ? 'text-income' : 'text-expense'}`}>
-                    {bill.type === 'income' ? '+' : '-'}${bill.amount.toFixed(2)}
-                  </div>
+      <CardContent>
+        {filteredBills.length === 0 ? (
+          <p className="text-center py-8 text-muted-foreground">
+            No transactions yet. Add your first bill by clicking "Add Bill".
+          </p>
+        ) : (
+          <div className="max-h-80 overflow-y-auto space-y-1 pr-2">
+            {[...filteredBills].reverse().map((bill) => (
+              <div 
+                key={bill.id} 
+                className="flex justify-between py-2 border-b last:border-0 hover:bg-gray-50 cursor-pointer p-2 rounded-md transition-colors"
+                onClick={() => setSelectedBill(bill.id)}
+              >
+                <div>
+                  <span className="font-medium">{bill.title || 'Untitled'}</span>
+                  <p className="text-sm text-muted-foreground">
+                    {bill.date.toLocaleDateString()}
+                  </p>
                 </div>
-              ))}
-            </div>
-          )}
-        </CardContent>
+                <div className={`font-semibold ${bill.type === 'income' ? 'text-income' : 'text-expense'}`}>
+                  {bill.type === 'income' ? '+' : '-'}${bill.amount.toFixed(2)}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </CardContent>
+        
       </Card>
       
       {/* Transaction Detail Modal */}

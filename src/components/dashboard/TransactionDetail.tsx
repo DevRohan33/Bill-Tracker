@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { useBill } from '@/contexts/BillContext';
 import { 
@@ -8,7 +7,7 @@ import {
   DialogTitle,
   DialogFooter
 } from '@/components/ui/dialog';
-import { Calendar, FileText, FileImage } from 'lucide-react';
+import { Calendar, FileText } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 interface TransactionDetailProps {
@@ -22,6 +21,15 @@ const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
   const bill = bills.find(b => b.id === billId);
   
   if (!bill) return null;
+
+  const isImage = (url: string): boolean => {
+    try {
+      const ext = new URL(url).pathname.split('.').pop()?.toLowerCase();
+      return !!ext && ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
+    } catch {
+      return false;
+    }
+  };
 
   return (
     <Dialog open={true} onOpenChange={(isOpen) => !isOpen && onClose()}>
@@ -66,22 +74,29 @@ const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
             </div>
           )}
           
-          {bill.file && (
+          {bill.fileURL && (
             <div className="mt-4">
               <span className="text-sm font-medium text-muted-foreground mb-2 block">Attached File</span>
               <div className="border rounded-lg p-4 bg-muted/20">
-                {bill.file.type.startsWith('image/') ? (
-                  <div>
-                    <img 
-                      src={URL.createObjectURL(bill.file)} 
-                      alt="Receipt" 
-                      className="max-w-full h-auto rounded-md mx-auto max-h-[300px] object-contain"
-                    />
-                  </div>
+                {isImage(bill.fileURL) ? (
+                  <img
+                    src={bill.fileURL}
+                    alt="Attached receipt"
+                    className="max-w-full h-auto rounded-md mx-auto max-h-[300px] object-contain"
+                  />
                 ) : (
-                  <div className="flex items-center justify-center p-4">
-                    <FileImage size={48} className="text-muted-foreground" />
-                    <span className="ml-2">{bill.file.name}</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <FileText size={24} className="text-muted-foreground mr-2" />
+                      <a
+                        href={bill.fileURL}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-blue-600 underline"
+                      >
+                        View File
+                      </a>
+                    </div>
                   </div>
                 )}
               </div>
