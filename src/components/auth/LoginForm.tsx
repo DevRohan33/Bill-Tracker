@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabaseClient';
+
 
 const LoginForm = () => {
   const navigate = useNavigate();
@@ -26,7 +28,14 @@ const LoginForm = () => {
 
     setLoading(true);
     try {
-      // TODO: Replace with your Supabase login
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+    });
+
+    if (error) {
+      throw error;
+    }
       toast({ title: "Success", description: "Login successful!" });
       navigate('/dashboard');
     } catch (error: any) {
@@ -43,7 +52,12 @@ const LoginForm = () => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
-        <h1 className="text-2xl font-bold">Login to Your Bill Tracker</h1>
+      <img
+        src="/Logo1.png" 
+        alt="Jiffi Fi Logo"
+        className="mx-auto h-24 w-24"
+      />
+        <h1 className="text-2xl font-bold">Login to Jiffi Fi</h1>
         <p className="text-muted-foreground">Enter your credentials to access your account</p>
       </div>
 
@@ -89,10 +103,15 @@ const LoginForm = () => {
           {loading ? 'Logging in...' : 'Login'}
         </Button>
 
-        <div className="flex flex-col gap-2 pt-2">
-          <Button variant="outline" className="w-full">Continue with Google</Button>
-          <Button variant="outline" className="w-full">Continue with Phone</Button>
+        <div className="flex justify-between gap-4 pt-2">
+          <Button variant="outline" className="w-full flex justify-center p-2">
+            <img src="/GOOGLE.png" alt="Google" className="h-5 w-5" />
+          </Button>
+          <Button variant="outline" className="w-full flex justify-center p-2">
+            <img src="/CALL.png" alt="Phone" className="h-5 w-5" />
+          </Button>
         </div>
+
 
         <div className="text-center pt-4">
           <p className="text-sm text-muted-foreground">

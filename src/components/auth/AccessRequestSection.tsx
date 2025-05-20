@@ -1,64 +1,52 @@
-
-import React, { useState } from 'react';
-import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
-import AccessRequestForm from './AccessRequestForm';
+import React from 'react';
+import { CheckCircle } from 'lucide-react';
 
 const AccessRequestSection = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-
   return (
     <div className="space-y-8">
       <div className="space-y-4">
-        <h2 className="text-2xl font-bold">Need a Simple Billing Solution for Your Business?</h2>
-        <p className="text-gray-600">
-          We provide a smart, web-based bill tracking solution tailored for small business owners. 
-          No setup needed. Start tracking your income and expenses instantly.
+        <h2 className="text-3xl font-bold leading-tight">Why Choose Our Billing Solution?</h2>
+        <p className="text-gray-600 text-base">
+          Simplify your finances with our powerful, easy-to-use web-based bill tracker.
+          Designed for freelancers, startups, and growing businesses. No installation, no hassle.
         </p>
-        
-        <ul className="space-y-2 mt-6">
-          <li className="flex items-center gap-2">
-            <div className="bg-primary/20 text-primary p-1 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <span>Easy to use dashboard</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="bg-primary/20 text-primary p-1 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <span>Track income and expenses</span>
-          </li>
-          <li className="flex items-center gap-2">
-            <div className="bg-primary/20 text-primary p-1 rounded-full">
-              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
-            </div>
-            <span>Export financial reports</span>
-          </li>
+
+        {/* Features List */}
+        <ul className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+          {[
+            'Real-time expense tracking',
+            'Automated monthly reports',
+            'Multi-user collaboration',
+            'PDF/Excel export options',
+            'Smart category detection',
+            'Recurring billing reminders',
+          ].map((feature, i) => (
+            <li key={i} className="flex items-center gap-2">
+              <div className="text-primary">
+                <CheckCircle className="w-5 h-5" />
+              </div>
+              <span>{feature}</span>
+            </li>
+          ))}
         </ul>
       </div>
 
-      <Button 
-        onClick={() => setIsDialogOpen(true)} 
-        size="lg" 
-        className="w-full"
-      >
-        Request Access / Subscribe
-      </Button>
-      
-      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Request Access</DialogTitle>
-            <DialogDescription>
-              Fill out this form to request access to our bill tracking solution.
-            </DialogDescription>
-          </DialogHeader>
-          <AccessRequestForm onSuccess={() => setIsDialogOpen(false)} />
-        </DialogContent>
-      </Dialog>
+      {/* Stats Section */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 pt-6">
+        <StatCard number="3,212+" label="Bills Tracked" />
+        <StatCard number="₹12.4M+" label="Expenses Analyzed" />
+        <StatCard number="220+" label="Businesses Served" />
+        <StatCard number="100%" label="Data Encrypted" />
+      </div>
     </div>
   );
 };
+
+const StatCard = ({ number, label }: { number: string; label: string }) => (
+  <div className="text-center bg-gray-50 p-4 rounded-xl shadow-sm hover:shadow-md transition">
+    <h3 className="text-2xl font-semibold text-primary">{number}</h3>
+    <p className="text-gray-600 text-sm mt-1">{label}</p>
+  </div>
+);
 
 export default AccessRequestSection;

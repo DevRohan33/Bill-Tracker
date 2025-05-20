@@ -15,14 +15,15 @@ interface TransactionDetailProps {
   onClose: () => void;
 }
 
-const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
+const TransactionDetail: React.FC<TransactionDetailProps> = ({ billId, onClose }) => {
   const { bills } = useBill();
   
   const bill = bills.find(b => b.id === billId);
   
   if (!bill) return null;
 
-  const isImage = (url: string): boolean => {
+  const isImage = (url: string | null | undefined): boolean => {
+    if (!url) return false;
     try {
       const ext = new URL(url).pathname.split('.').pop()?.toLowerCase();
       return !!ext && ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
@@ -47,7 +48,7 @@ const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
           <div className="flex flex-col space-y-1">
             <span className="text-sm font-medium text-muted-foreground">Amount</span>
             <span className={`text-xl font-semibold ${bill.type === 'income' ? 'text-income' : 'text-expense'}`}>
-              {bill.type === 'income' ? '+' : '-'}${bill.amount.toFixed(2)}
+              {bill.type === 'income' ? '+' : '-'}₹{bill.amount.toFixed(2)}
             </span>
           </div>
           
@@ -66,7 +67,7 @@ const TransactionDetail = ({ billId, onClose }: TransactionDetailProps) => {
           
           {bill.note && (
             <div className="flex flex-col space-y-1">
-              <span className="text-sm font-medium text-muted-foreground">Description</span>
+              <span className="text-sm font-medium text-muted-foreground">Note</span>
               <div className="flex items-start">
                 <FileText className="mr-2 mt-0.5 size-4 text-muted-foreground" />
                 <span>{bill.note}</span>

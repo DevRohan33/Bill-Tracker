@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { cn } from '@/lib/utils';
@@ -8,8 +7,16 @@ interface SummaryCardProps {
   amount: number;
   icon: React.ReactNode;
   className?: string;
-  variant?: 'income' | 'expense' | 'profit';
+  variant?: 'income' | 'expense' | 'profit' | 'warning';
 }
+
+// Currency formatter for INR
+const formatCurrency = (value: number) =>
+  new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    minimumFractionDigits: 2,
+  }).format(value);
 
 const SummaryCard = ({ title, amount, icon, className, variant = 'income' }: SummaryCardProps) => {
   const getVariantClasses = () => {
@@ -34,7 +41,7 @@ const SummaryCard = ({ title, amount, icon, className, variant = 'income' }: Sum
           <div>
             <p className="text-sm font-medium">{title}</p>
             <h3 className="text-2xl font-bold mt-1">
-              ${Math.abs(amount).toFixed(2)}
+              {formatCurrency(Math.abs(amount))}
               {variant === 'profit' && amount < 0 && ' (Loss)'}
             </h3>
           </div>

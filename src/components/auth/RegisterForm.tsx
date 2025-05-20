@@ -5,6 +5,8 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Mail, Lock } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
+import { supabase } from '@/lib/supabaseClient';
+
 
 const RegisterForm = () => {
   const navigate = useNavigate();
@@ -26,9 +28,16 @@ const RegisterForm = () => {
 
     setLoading(true);
     try {
-      // TODO: Replace with Supabase signup logic
+      const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+
+    if (error) {
+      throw error;
+    }
       toast({ title: "Success", description: "Account created successfully!" });
-      navigate('/dashboard');
+      navigate('/login');
     } catch (error: any) {
       toast({
         title: "Registration failed",
@@ -43,6 +52,11 @@ const RegisterForm = () => {
   return (
     <div className="space-y-6">
       <div className="text-center space-y-2">
+        <img
+        src="/Logo1.png" 
+        alt="Jiffi Fi Logo"
+        className="mx-auto h-24 w-24"
+      />
         <h1 className="text-2xl font-bold">Create an Account</h1>
         <p className="text-muted-foreground">Start tracking your bills with ease</p>
       </div>
@@ -86,9 +100,13 @@ const RegisterForm = () => {
           {loading ? 'Creating account...' : 'Register'}
         </Button>
 
-        <div className="flex flex-col gap-2 pt-2">
-          <Button variant="outline" className="w-full">Sign up with Google</Button>
-          <Button variant="outline" className="w-full">Sign up with Phone</Button>
+        <div className="flex justify-between gap-4 pt-2">
+          <Button variant="outline" className="w-full flex justify-center p-2">
+            <img src="/GOOGLE.png" alt="Google" className="h-5 w-5" />
+          </Button>
+          <Button variant="outline" className="w-full flex justify-center p-2">
+            <img src="/CALL.png" alt="Phone" className="h-5 w-5" />
+          </Button>
         </div>
 
                 <div className="text-center pt-4">
